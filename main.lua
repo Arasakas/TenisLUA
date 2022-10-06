@@ -45,10 +45,10 @@ end
 
 function love.update()
     -- Raquette Gauche --
-    if love.keyboard.isDown("z") and pad.y + pad.hauteur< love.graphics.getHeight() then
+    if love.keyboard.isDown("s") and pad.y + pad.hauteur< love.graphics.getHeight() then
         pad.y = pad.y + 3
     end
-    if love.keyboard.isDown("s") and pad.y > 0 then
+    if love.keyboard.isDown("z") and pad.y > 0 then
         pad.y = pad.y - 3
     end
 
@@ -56,7 +56,7 @@ function love.update()
     if love.keyboard.isDown("down") and pad2.y + pad2.hauteur< love.graphics.getHeight() then
         pad2.y = pad2.y + 3
     end
-    if love.keyboard.isDown("up") and pad.y > 0 then
+    if love.keyboard.isDown("up") and pad2.y > 0 then
         pad2.y = pad2.y - 3
     end
 
@@ -70,9 +70,10 @@ function love.update()
     end
 
     if balle.x > love.graphics.getWidth() - balle.largeur then
+       balle.vitesse_x = - balle.vitesse_x
         -- Perdu pour le joueur de droite
-        CentreBalle()
-        score_joueur1 = score_joueur1 + 1
+       CentreBalle()
+       score_joueur1 = score_joueur1 + 1
     end
 
     if balle.y < 0 then
@@ -85,7 +86,7 @@ function love.update()
         score_joueur2 = score_joueur2 + 1
     end 
 
-    -- La balle a atteint la raquette ? --
+    -- La balle a atteint la raquette Gauche ? --
     if balle.x <= pad.x + pad.largeur then
         if balle.y + balle.hauteur > pad.y and balle.y < pad.y + pad.hauteur then
             balle.vitesse_x = - balle.vitesse_x
@@ -93,11 +94,12 @@ function love.update()
         end
     end
 
--- La balle a atteint la raquette de droite ?
+    -- La balle a atteint la raquette Droite ?
     if balle.x + balle.largeur > pad2.x then
--- Tester si la balle est sur la raquette
+    -- Tester si la balle est sur la raquette
         if balle.y + balle.hauteur > pad2.y and balle.y < pad2.y + pad2.hauteur then
-            -- Perdu pour le joueur de droite
+            balle.vitesse_x = - balle.vitesse_x
+
         end
     end
 end
