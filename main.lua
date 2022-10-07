@@ -1,4 +1,3 @@
-
 -- Première Raquette --
 pad = {}
 pad.x = 0
@@ -26,6 +25,9 @@ balle.vitesse_y = 2
 score_joueur1 = 0
 score_joueur2 = 0
 
+-- Trainer --
+listeTrail = {}
+
 function CentreBalle()
     balle.x = love.graphics.getWidth()/2 - balle.largeur/2
     balle.y = love.graphics.getHeight()/2 - balle.hauteur/2
@@ -43,22 +45,44 @@ function love.load()
    pad2.y = love.graphics.getHeight() - pad2.hauteur
 end
 
-function love.update()
+function love.update(dt)
     -- Raquette Gauche --
     if love.keyboard.isDown("s") and pad.y + pad.hauteur< love.graphics.getHeight() then
         pad.y = pad.y + 3
     end
+
     if love.keyboard.isDown("z") and pad.y > 0 then
         pad.y = pad.y - 3
     end
 
- -- Raquette Droite --
+    -- Raquette Droite --
     if love.keyboard.isDown("down") and pad2.y + pad2.hauteur< love.graphics.getHeight() then
         pad2.y = pad2.y + 3
     end
+
     if love.keyboard.isDown("up") and pad2.y > 0 then
         pad2.y = pad2.y - 3
     end
+
+
+    for n = #listeTrail, 1 , -1 do
+        local t = listeTrail[n]
+        t.vie = t.vie - dt
+        t.x = t.x + t.vx
+        t.y = t.y + t.vy
+        if t.vie <= 0 then
+            table.remove(listeTrail, n)
+        end
+    end
+
+    -- ligne trainee --
+    local myTrainee = {}
+    myTrainee.x = balle.x
+    myTrainee.y = balle.y
+    myTrainee.vx = math.random(-1,1)
+    myTrainee.vy = math.random(-1,1)
+    myTrainee.vie = 0.5
+    table.insert(listeTrail, myTrainee)
 
     -- Balle --
     balle.x = balle.x + balle.vitesse_x
@@ -111,7 +135,15 @@ function love.draw()
     --- Deuxième raquette---
     love.graphics.rectangle("fill",pad2.x,pad2.y,pad2.largeur,pad2.hauteur)
 
+    --Dessin de la trainee --
+    for n= 1 , #listeTrail do
+        local t = listeTrail[n]
+        love.graphics.setColor(1,1,1,t.vie / 9 )
+        love.graphics.rectangle("fill",t.x,t.y,balle.largeur,balle.hauteur)
+
+    end
     -- Balle--
+    love.graphics.setColor(1,1,1,1)
     love.graphics.rectangle("fill",balle.x,balle.y,balle.largeur,balle.hauteur)
 
     -- Score --
